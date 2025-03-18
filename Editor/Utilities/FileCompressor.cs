@@ -4,6 +4,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
+// ReSharper disable MustUseReturnValue
+
 namespace UnityEditor.Build.Pipeline.Utilities
 {
     /// <summary>

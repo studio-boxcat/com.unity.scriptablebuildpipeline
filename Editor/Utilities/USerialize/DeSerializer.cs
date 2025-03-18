@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Linq.Expressions;
-
 using UnityEngine;
+
+// ReSharper disable MustUseReturnValue
 
 namespace UnityEditor.Build.Pipeline.Utilities.USerialize
 {
