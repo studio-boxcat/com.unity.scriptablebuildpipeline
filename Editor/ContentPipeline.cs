@@ -132,7 +132,11 @@ namespace UnityEditor.Build.Pipeline
                         buildContext.SetContextObject(buildCache);
                         // If IDeterministicIdentifiers was passed in with contextObjects, don't add the default
                         if (!buildContext.ContainsContextObject(typeof(IDeterministicIdentifiers)))
+                        {
+                            if (!parameters.ContiguousBundles)
+                                throw new InvalidOperationException("ContiguousBundles must be enabled. Non-contiguous (Unity5Packed) identifiers have been removed.");
                             buildContext.SetContextObject(new PrefabPackedIdentifiers());
+                        }
                         buildContext.SetContextObject(new BuildDependencyData());
                         buildContext.SetContextObject(new ObjectDependencyData());
                         buildContext.SetContextObject(new BundleWriteData());
