@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEditor.Build.Pipeline.Injector;
 using UnityEditor.Build.Pipeline.Interfaces;
 using UnityEditor.Build.Pipeline.Utilities;
-using UnityEditor.Build.Profiler;
 using UnityEditor.Build.Reporting;
 
 namespace UnityEditor.Build.Pipeline
@@ -69,75 +68,6 @@ namespace UnityEditor.Build.Pipeline
             if (tracker is IDisposable disposable)
                 disposable.Dispose();
 
-            return ReturnCode.Success;
-        }
-
-        /// <summary>
-        /// Run implementation with task profiler that takes a set of tasks, a context, runs returning the build results and prints out the profiler details.
-        /// <seealso cref="IBuildTask"/>, <seealso cref="IBuildContext"/>, and <seealso cref="ReturnCode"/>
-        /// </summary>
-        /// <param name="pipeline">The set of build tasks to run.</param>
-        /// <param name="context">The build context to use for this run.</param>
-        /// <returns>Return code with status information about success or failure causes.</returns>
-        internal static ReturnCode RunProfiled(IList<IBuildTask> pipeline, IBuildContext context)
-        {
-            // Avoid throwing exceptions in here as we don't want them bubbling up to calling user code
-            if (pipeline == null)
-            {
-                BuildLogger.LogException(new ArgumentNullException("pipeline"));
-                return ReturnCode.Exception;
-            }
-
-            // Avoid throwing exceptions in here as we don't want them bubbling up to calling user code
-            if (context == null)
-            {
-                BuildLogger.LogException(new ArgumentNullException("context"));
-                return ReturnCode.Exception;
-            }
-
-            var profiler = new BuildProfiler(pipeline.Count + 1);
-            profiler.Start(pipeline.Count, "TotalTime");
-            int count = 0;
-
-            IProgressTracker tracker;
-            if (context.TryGetContextObject(out tracker))
-                tracker.TaskCount = pipeline.Count;
-
-            foreach (IBuildTask task in pipeline)
-            {
-                try
-                {
-                    if (!tracker.UpdateTaskUnchecked(task.GetType().Name.HumanReadable()))
-                    {
-                        profiler.Stop(pipeline.Count);
-                        profiler.Print();
-                        return ReturnCode.Canceled;
-                    }
-
-                    ContextInjector.Inject(context, task);
-                    profiler.Start(count, task.GetType().Name);
-                    var result = task.Run();
-                    profiler.Stop(count++);
-
-                    if (result < ReturnCode.Success)
-                    {
-                        profiler.Stop(pipeline.Count);
-                        profiler.Print();
-                        return result;
-                    }
-                    ContextInjector.Extract(context, task);
-                }
-                catch (Exception e)
-                {
-                    BuildLogger.LogException(e);
-                    profiler.Stop(count);
-                    profiler.Print();
-                    return ReturnCode.Exception;
-                }
-            }
-
-            profiler.Stop(pipeline.Count);
-            profiler.Print();
             return ReturnCode.Success;
         }
 

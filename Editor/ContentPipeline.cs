@@ -152,11 +152,7 @@ namespace UnityEditor.Build.Pipeline
                     }
                     exitCode = BuildTasksRunner.Validate(taskList, buildContext);
                     if (exitCode >= ReturnCode.Success)
-#if SBP_PROFILER_ENABLE
-                        exitCode = BuildTasksRunner.RunProfiled(taskList, buildContext);
-#else
                         exitCode = BuildTasksRunner.Run(taskList, buildContext);
-#endif
 
                     if (Directory.Exists(parameters.TempOutputFolder))
                         Directory.Delete(parameters.TempOutputFolder, true);
