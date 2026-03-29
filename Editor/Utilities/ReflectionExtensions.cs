@@ -12,10 +12,8 @@ namespace UnityEditor.Build.Pipeline.Utilities
     static class ReflectionExtensions
     {
         static FieldInfo WriteResult_SerializedObjects;
-        static FieldInfo WriteResult_ResourceFiles;
 
         static FieldInfo SceneDependencyInfo_Scene;
-        static FieldInfo SceneDependencyInfo_ProcessedScene;
         static FieldInfo SceneDependencyInfo_ReferencedObjects;
 
         static bool BuildUsageTagSet_SupportsFilterToSubset;
@@ -24,9 +22,7 @@ namespace UnityEditor.Build.Pipeline.Utilities
         static ReflectionExtensions()
         {
             WriteResult_SerializedObjects = typeof(WriteResult).GetField("m_SerializedObjects", BindingFlags.NonPublic | BindingFlags.Instance);
-            WriteResult_ResourceFiles = typeof(WriteResult).GetField("m_ResourceFiles", BindingFlags.NonPublic | BindingFlags.Instance);
             SceneDependencyInfo_Scene =  typeof(SceneDependencyInfo).GetField("m_Scene", BindingFlags.Instance | BindingFlags.NonPublic);
-            SceneDependencyInfo_ProcessedScene = typeof(SceneDependencyInfo).GetField("m_ProcessedScene", BindingFlags.Instance | BindingFlags.NonPublic);
             SceneDependencyInfo_ReferencedObjects = typeof(SceneDependencyInfo).GetField("m_ReferencedObjects", BindingFlags.Instance | BindingFlags.NonPublic);
 
             BuildUsageTagSet_SupportsFilterToSubset = typeof(BuildUsageTagSet).GetMethod("FilterToSubset") != null;
@@ -52,26 +48,10 @@ namespace UnityEditor.Build.Pipeline.Utilities
             result = (WriteResult)boxed;
         }
 
-        public static void SetResourceFiles(this ref WriteResult result, ResourceFile[] files)
-        {
-            object boxed = result;
-            WriteResult_ResourceFiles.SetValue(boxed, files);
-            result = (WriteResult)boxed;
-        }
-
         public static void SetScene(this ref SceneDependencyInfo dependencyInfo, string scene)
         {
             object boxed = dependencyInfo;
             SceneDependencyInfo_Scene.SetValue(boxed, scene);
-            dependencyInfo = (SceneDependencyInfo)boxed;
-        }
-
-        // Use conditionals to remove api from callsite
-        [Conditional("NOT_UNITY_2019_3_OR_NEWER")]
-        public static void SetProcessedScene(this ref SceneDependencyInfo dependencyInfo, string processedScene)
-        {
-            object boxed = dependencyInfo;
-            SceneDependencyInfo_ProcessedScene.SetValue(boxed, processedScene);
             dependencyInfo = (SceneDependencyInfo)boxed;
         }
 

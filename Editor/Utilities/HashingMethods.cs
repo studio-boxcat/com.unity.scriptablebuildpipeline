@@ -307,8 +307,6 @@ namespace UnityEditor.Build.Pipeline.Utilities
 #endif
             }
 
-            if (type == typeof(MD4))
-                return MD4.Create();
 #if UNITY_2019_3_OR_NEWER
             if (type == typeof(SpookyHash))
                 return SpookyHash.Create();

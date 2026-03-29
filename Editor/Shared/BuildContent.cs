@@ -30,57 +30,6 @@ namespace UnityEditor.Build.Pipeline
 #endif
 
     /// <summary>
-    /// Basic implementation of IBuildContent. Stores the list of Assets to feed the Scriptable Build Pipeline.
-    /// <see cref="IBuildContent"/>
-    /// </summary>
-    [Serializable]
-    public class BuildContent : IBuildContent
-    {
-        /// <inheritdoc />
-        public List<GUID> Assets { get; private set; }
-
-        /// <inheritdoc />
-        public List<GUID> Scenes { get; private set; }
-
-#if UNITY_2019_3_OR_NEWER
-        /// <inheritdoc />
-        public List<CustomContent> CustomAssets { get; private set; }
-#endif
-
-        /// <summary>
-        /// Default constructor, creates an empty BuildContent.
-        /// </summary>
-        public BuildContent() {}
-
-        /// <summary>
-        /// Default constructor, takes a set of Assets and converts them to the appropriate properties.
-        /// </summary>
-        /// <param name="assets">The set of Assets identified by GUID to ensure are packaged with the build</param>
-        public BuildContent(IEnumerable<GUID> assets)
-        {
-            if (assets == null)
-                throw new ArgumentNullException("assets");
-
-            Assets = new List<GUID>();
-            Scenes = new List<GUID>();
-#if UNITY_2019_3_OR_NEWER
-            CustomAssets = new List<CustomContent>();
-#endif
-
-            foreach (var asset in assets)
-            {
-                ValidationMethods.Status assetType = ValidationMethods.ValidAsset(asset);
-                if (assetType == ValidationMethods.Status.Asset)
-                    Assets.Add(asset);
-                else if (assetType == ValidationMethods.Status.Scene)
-                    Scenes.Add(asset);
-                else
-                    throw new ArgumentException(string.Format("Asset '{0}' is not a valid Asset or Scene.", asset.ToString()));
-            }
-        }
-    }
-
-    /// <summary>
     /// Basic implementation of IBundleBuildContent. Stores the list of Assets with explicit Asset Bundle layout to feed the Scriptable Build Pipeline.
     /// <see cref="IBundleBuildContent"/>
     /// </summary>

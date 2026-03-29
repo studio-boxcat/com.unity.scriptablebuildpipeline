@@ -27,31 +27,6 @@ namespace UnityEditor.Build.Pipeline
     }
 
     /// <summary>
-    /// Basic implementation of IBuildResults. Stores the results for script compilation and content building.
-    /// <see cref="IBuildResults"/>
-    /// </summary>
-    [Serializable]
-    public class BuildResults : IBuildResults
-    {
-        /// <inheritdoc />
-        public ScriptCompilationResult ScriptResults { get; set; }
-        /// <inheritdoc />
-        public Dictionary<string, WriteResult> WriteResults { get; private set; }
-        /// <inheritdoc />
-        public Dictionary<string, SerializedFileMetaData> WriteResultsMetaData { get; private set; }
-        /// <inheritdoc />
-        public Dictionary<GUID, AssetResultData> AssetResults { get; private set; }
-
-        /// <summary>
-        /// Default constructor, initializes properties to defaults
-        /// </summary>
-        public BuildResults()
-        {
-            WriteResults = new Dictionary<string, WriteResult>();
-        }
-    }
-
-    /// <summary>
     /// Basic implementation of IBundleBuildResults. Stores the results for script compilation and asset bundle building.
     /// <see cref="IBundleBuildResults"/>
     /// </summary>

@@ -111,12 +111,8 @@ namespace UnityEditor.Build.Pipeline
             ReturnCode exitCode;
             result = new BundleBuildResults();
 
-#if !CI_TESTRUNNER_PROJECT
             using (new SceneStateCleanup())
             using (var progressTracker = new ProgressTracker())
-#else
-            using (var progressTracker = new ProgressLoggingTracker())
-#endif
             {
                 using (new AutoBuildCacheUtility())
                 using (var interfacesWrapper = new BuildInterfacesWrapper())
@@ -136,7 +132,7 @@ namespace UnityEditor.Build.Pipeline
                         buildContext.SetContextObject(buildCache);
                         // If IDeterministicIdentifiers was passed in with contextObjects, don't add the default
                         if (!buildContext.ContainsContextObject(typeof(IDeterministicIdentifiers)))
-                            buildContext.SetContextObject(parameters.ContiguousBundles ? new PrefabPackedIdentifiers() : (IDeterministicIdentifiers)new Unity5PackedIdentifiers());
+                            buildContext.SetContextObject(new PrefabPackedIdentifiers());
                         buildContext.SetContextObject(new BuildDependencyData());
                         buildContext.SetContextObject(new ObjectDependencyData());
                         buildContext.SetContextObject(new BundleWriteData());

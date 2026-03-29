@@ -227,36 +227,6 @@ namespace UnityEditor.Build.Pipeline.Utilities
                 throw new Exception("Deferred events did not line up as expected");
         }
 
-        static void AppendLineIndented(StringBuilder builder, int indentCount, string text)
-        {
-            for (int i = 0; i < indentCount; i++)
-                builder.Append(" ");
-            builder.AppendLine(text);
-        }
-
-        static void PrintNodeR(bool includeSelf, StringBuilder builder, int indentCount, BuildLog.LogStep node)
-        {
-            if (includeSelf)
-                AppendLineIndented(builder, indentCount, $"[{node.Name}] {node.DurationMS * 1000}us");
-            foreach (var msg in node.Entries)
-            {
-                string line = (msg.Level == LogLevel.Warning || msg.Level == LogLevel.Error) ? $"{msg.Level}: {msg.Message}" : msg.Message;
-                AppendLineIndented(builder, indentCount + 1, line);
-            }
-            foreach (var child in node.Children)
-                PrintNodeR(true, builder, indentCount + 1, child);
-        }
-
-        internal string FormatAsText()
-        {
-            using (new CultureScope())
-            {
-                StringBuilder builder = new StringBuilder();
-                PrintNodeR(false, builder, -1, Root);
-                return builder.ToString();
-            }
-        }
-
         static string CleanJSONText(string message)
         {
             return message.Replace("\\", "\\\\");
